@@ -21,6 +21,7 @@ function renderTable(dataSet) {
   dataSet.forEach(row => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
+      <td>${row["Imagen"] ? `<img src="${row["Imagen"]}">` : ""}</td>
       <td>${row["CODIGO DE BARRAS"] || ""}</td>
       <td>${row["DESCRIPCION"] || ""}</td>
       <td>${row["PRECIO"] || ""}</td>
