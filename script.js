@@ -13,7 +13,6 @@ fetch(url)
   .then(res => res.json())
   .then(json => {
     data = json;
-    renderTable(data);
     populateFilters(data);
   });
 
