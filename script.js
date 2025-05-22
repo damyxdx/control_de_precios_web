@@ -21,7 +21,7 @@ function renderTable(dataSet) {
   dataSet.forEach(row => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${row["Imagen"] ? `<img src="${row["Imagen"]}">` : ""}</td>
+      <td>${row["IMAGEN"] ? `<img src="${row["IMAGEN"]}" style="width:80px;height:auto;">` : ""}</td>
       <td>${row["CODIGO DE BARRAS"] || ""}</td>
       <td>${row["DESCRIPCION"] || ""}</td>
       <td>${row["PRECIO"] || ""}</td>
@@ -31,6 +31,7 @@ function renderTable(dataSet) {
     tableBody.appendChild(tr);
   });
 }
+
 
 function populateFilters(dataSet) {
   const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))];
