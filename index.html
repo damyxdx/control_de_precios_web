@@ -5,12 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Precios</title>
   <style>
-    body { font-family: Arial, sans-serif; background: white; padding: 20px; }
-    h1 { color: #333; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
-    input, select { margin: 5px 0; padding: 8px; width: 100%; }
-    .filter-section { margin-bottom: 20px; }
+    body { 
+      font-family: Arial, sans-serif;
+      background: white;
+      padding: 15px;
+      margin: 0;
+    }
+
+    h1 { 
+      color: #333; 
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow-x: auto;
+      display: block;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 600px) {
+      .filter-section {
+        flex-direction: row;
+      }
+
+      input, select {
+        width: auto;
+        flex: 1;
+      }
+
+      table {
+        overflow-x: visible;
+      }
+    }
   </style>
 </head>
 <body>
