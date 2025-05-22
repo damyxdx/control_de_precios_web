@@ -55,6 +55,11 @@ function applyFilters() {
   const selectedMarca = marcaFilter.value;
   const selectedPiso = pisoFilter.value;
 
+    if (!search && !selectedMarca && !selectedPiso) {
+    tableBody.innerHTML = "";
+    return;
+  }
+
   const filtered = data.filter(row => {
     return (!selectedMarca || row["MARCA"] === selectedMarca) &&
            (!selectedPiso || row["PISO"] === selectedPiso) &&
