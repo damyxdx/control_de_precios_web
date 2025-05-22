@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Precios</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: white; padding: 20px; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
+    input, select { margin: 5px 0; padding: 8px; width: 100%; }
+    .filter-section { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Control de Precios</h1>
+  <div class="filter-section">
+    <input type="text" id="search" placeholder="Buscar por código, descripción, marca o piso">
+    <select id="marcaFilter"><option value="">Filtrar por Marca</option></select>
+    <select id="pisoFilter"><option value="">Filtrar por Piso</option></select>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Código de Barras</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Marca</th>
+        <th>Piso</th>
+      </tr>
+    </thead>
+    <tbody id="data-body"></tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>
