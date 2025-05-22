@@ -55,7 +55,7 @@ function applyFilters() {
   const selectedMarca = marcaFilter.value;
   const selectedPiso = pisoFilter.value;
 
-    if (!search && !selectedMarca && !selectedPiso) {
+  if (!search && !selectedMarca && !selectedPiso) {
     tableBody.innerHTML = "";
     return;
   }
