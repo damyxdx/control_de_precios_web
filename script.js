@@ -24,8 +24,7 @@ function renderTable(dataSet) {
       <td>${row["IMAGEN"] ? `<img src="${row["IMAGEN"]}" style="width:80px;height:auto;">` : ""}</td>
       <td>${row["PRECIO"] || ""}</td>
       <td>${row["CODIGO DE BARRAS"] || ""}</td>
-      <td>${row["DESCRIPCION"] || ""}</td>
-      
+      <td>${row["DESCRIPCION"] || ""}</td>      
       <td>${row["MARCA"] || ""}</td>
       <td>${row["PISO"] || ""}</td>
     `;
