@@ -1,6 +1,6 @@
 const sheetID = "1id74cUVaB0GN6ROPrxwBj8K-FZWkl6dD7kMgWze_X6U";
-const sheetName = "Equivalencias";
-const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+const sheetNames = ["PB", "BEAUTY", "BAZAR"];
+const urls = sheetNames.map(name => `https://opensheet.elk.sh/${sheetID}/${name}`);
 
 const tableBody = document.getElementById("data-body");
 const searchInput = document.getElementById("search");
@@ -9,15 +9,21 @@ const pisoFilter = document.getElementById("pisoFilter");
 
 let data = [];
 
-fetch(url)
-  .then(res => res.json())
-  .then(json => {
-    data = json;
+Promise.all(urls.map(url => fetch(url).then(res => res.json())))
+  .then(results => {
+    data = results.flat();  // Une todos los datos de las hojas
     populateFilters(data);
+    setInitialMessage();
   });
 
 function renderTable(dataSet) {
   tableBody.innerHTML = "";
+
+  if (dataSet.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="6">No se encontraron resultados.</td></tr>`;
+    return;
+  }
+
   dataSet.forEach(row => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -32,10 +38,12 @@ function renderTable(dataSet) {
   });
 }
 
-
 function populateFilters(dataSet) {
   const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))];
   const pisos = [...new Set(dataSet.map(item => item["PISO"]).filter(Boolean))];
+
+  marcaFilter.innerHTML = `<option value="">Todas las Marcas</option>`;
+  pisoFilter.innerHTML = `<option value="">Todos los Pisos</option>`;
 
   marcas.forEach(marca => {
     const opt = document.createElement("option");
@@ -58,7 +66,7 @@ function applyFilters() {
   const selectedPiso = pisoFilter.value;
 
   if (!search && !selectedMarca && !selectedPiso) {
-    tableBody.innerHTML = "";
+    setInitialMessage();
     return;
   }
 
@@ -74,6 +82,13 @@ function applyFilters() {
   renderTable(filtered);
 }
 
+function setInitialMessage() {
+  tableBody.innerHTML = `<tr><td colspan="6">Usa los filtros o ingresa una búsqueda para mostrar resultados.</td></tr>`;
+}
+
 searchInput.addEventListener("input", applyFilters);
+marcaFilter.addEventListener("change", applyFilters);
+pisoFilter.addEventListener("change", applyFilters);
+
 marcaFilter.addEventListener("change", applyFilters);
 pisoFilter.addEventListener("change", applyFilters);
