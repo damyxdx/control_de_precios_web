@@ -39,8 +39,8 @@ function renderTable(dataSet) {
 }
 
 function populateFilters(dataSet) {
-  const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))];
-  const pisos = [...new Set(dataSet.map(item => item["PISO"]).filter(Boolean))];
+  const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const pisos = [...new Set(dataSet.map(item => item["PISO"]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
   marcaFilter.innerHTML = `<option value="">Todas las Marcas</option>`;
   pisoFilter.innerHTML = `<option value="">Todos los Pisos</option>`;
@@ -59,6 +59,7 @@ function populateFilters(dataSet) {
     pisoFilter.appendChild(opt);
   });
 }
+
 
 function applyFilters() {
   const search = searchInput.value.toLowerCase();
