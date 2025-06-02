@@ -16,7 +16,7 @@ Promise.all(urls.map(url => fetch(url).then(res => res.json())))
     populateFilters(data);
 
     // --- Selección por defecto: Piso "Promocion" ---
-    const promociones = "PROMOCION"; 
+    const promociones = "Promocion";
     const opcionPromociones = [...pisoFilter.options].find(opt => opt.value.toLowerCase() === promociones.toLowerCase());
     if (opcionPromociones) {
       pisoFilter.value = opcionPromociones.value;
@@ -73,18 +73,10 @@ function populateFilters(dataSet) {
 }
 
 // --- Aplicar filtros ---
-function applyFilters(fromSearch = false) {
+function applyFilters() {
   const search = searchInput.value.toLowerCase();
-  let selectedMarca = marcaFilter.value;
-  let selectedPiso = pisoFilter.value;
-
-  // Si la llamada viene del buscador, resetea los filtros
-  if (fromSearch) {
-    marcaFilter.value = "";
-    pisoFilter.value = "";
-    selectedMarca = "";
-    selectedPiso = "";
-  }
+  const selectedMarca = marcaFilter.value;
+  const selectedPiso = pisoFilter.value;
 
   if (!search && !selectedMarca && !selectedPiso) {
     setInitialMessage();
@@ -110,14 +102,30 @@ function setInitialMessage() {
   tableBody.innerHTML = `<tr><td colspan="6">Usa los filtros o ingresa una búsqueda para mostrar resultados.</td></tr>`;
 }
 
-// Al escribir en el buscador, resetea los filtros
-searchInput.addEventListener("input", () => applyFilters(true));
-
-// Seleccionar todo el texto al hacer clic
+// --- Selecciona todo el texto al hacer foco ---
 searchInput.addEventListener("focus", function() {
   searchInput.select();
 });
 
-// Cambiar filtro manualmente no borra búsqueda
-marcaFilter.addEventListener("change", applyFilters);
-pisoFilter.addEventListener("change", applyFilters);
+// --- Al escribir en el buscador, limpia los filtros y filtra ---
+searchInput.addEventListener("input", function() {
+  if (marcaFilter.value !== "" || pisoFilter.value !== "") {
+    marcaFilter.value = "";
+    pisoFilter.value = "";
+  }
+  applyFilters();
+});
+
+// --- Al cambiar filtros, limpia el buscador y filtra ---
+marcaFilter.addEventListener("change", function() {
+  if (searchInput.value !== "") {
+    searchInput.value = "";
+  }
+  applyFilters();
+});
+pisoFilter.addEventListener("change", function() {
+  if (searchInput.value !== "") {
+    searchInput.value = "";
+  }
+  applyFilters();
+});
