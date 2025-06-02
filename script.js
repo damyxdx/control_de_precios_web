@@ -9,13 +9,24 @@ const pisoFilter = document.getElementById("pisoFilter");
 
 let data = [];
 
+// --- Carga de datos desde todas las hojas ---
 Promise.all(urls.map(url => fetch(url).then(res => res.json())))
   .then(results => {
-    data = results.flat();  // Une todos los datos de las hojas
+    data = results.flat();
     populateFilters(data);
-    setInitialMessage();
+
+    // --- Selección por defecto: Piso "Promociones" ---
+    const promociones = "Promocion"; // Ajustá si el texto es diferente en tu hoja
+    const opcionPromociones = [...pisoFilter.options].find(opt => opt.value.toLowerCase() === promociones.toLowerCase());
+    if (opcionPromociones) {
+      pisoFilter.value = opcionPromociones.value;
+      applyFilters();
+    } else {
+      setInitialMessage();
+    }
   });
 
+// --- Renderizado de tabla ---
 function renderTable(dataSet) {
   tableBody.innerHTML = "";
 
@@ -30,7 +41,7 @@ function renderTable(dataSet) {
       <td>${row["IMAGEN"] ? `<img src="${row["IMAGEN"]}" style="width:80px;height:auto;">` : ""}</td>
       <td>${row["PRECIO"] || ""}</td>
       <td>${row["CODIGO DE BARRAS"] || ""}</td>
-      <td>${row["DESCRIPCION"] || ""}</td>      
+      <td>${row["DESCRIPCION"] || ""}</td>
       <td>${row["MARCA"] || ""}</td>
       <td>${row["PISO"] || ""}</td>
     `;
@@ -38,9 +49,10 @@ function renderTable(dataSet) {
   });
 }
 
+// --- Filtros alfabéticos ---
 function populateFilters(dataSet) {
-  const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-  const pisos = [...new Set(dataSet.map(item => item["PISO"]).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+  const pisos = [...new Set(dataSet.map(item => item["PISO"]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
 
   marcaFilter.innerHTML = `<option value="">Todas las Marcas</option>`;
   pisoFilter.innerHTML = `<option value="">Todos los Pisos</option>`;
@@ -60,7 +72,7 @@ function populateFilters(dataSet) {
   });
 }
 
-
+// --- Aplicar filtros ---
 function applyFilters() {
   const search = searchInput.value.toLowerCase();
   const selectedMarca = marcaFilter.value;
@@ -74,22 +86,22 @@ function applyFilters() {
   const filtered = data.filter(row => {
     return (!selectedMarca || row["MARCA"] === selectedMarca) &&
            (!selectedPiso || row["PISO"] === selectedPiso) &&
-           (row["DESCRIPCION"]?.toLowerCase().includes(search) ||
-            row["CODIGO DE BARRAS"]?.toLowerCase().includes(search) ||
-            row["MARCA"]?.toLowerCase().includes(search) ||
-            row["PISO"]?.toLowerCase().includes(search));
+           (
+             row["DESCRIPCION"]?.toLowerCase().includes(search) ||
+             row["CODIGO DE BARRAS"]?.toLowerCase().includes(search) ||
+             row["MARCA"]?.toLowerCase().includes(search) ||
+             row["PISO"]?.toLowerCase().includes(search)
+           );
   });
 
   renderTable(filtered);
 }
 
+// --- Mensaje inicial ---
 function setInitialMessage() {
   tableBody.innerHTML = `<tr><td colspan="6">Usa los filtros o ingresa una búsqueda para mostrar resultados.</td></tr>`;
 }
 
 searchInput.addEventListener("input", applyFilters);
-marcaFilter.addEventListener("change", applyFilters);
-pisoFilter.addEventListener("change", applyFilters);
-
 marcaFilter.addEventListener("change", applyFilters);
 pisoFilter.addEventListener("change", applyFilters);
