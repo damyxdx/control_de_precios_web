@@ -15,8 +15,8 @@ Promise.all(urls.map(url => fetch(url).then(res => res.json())))
     data = results.flat();
     populateFilters(data);
 
-    // --- Selección por defecto: Piso "Promociones" ---
-    const promociones = "Promocion"; // Ajustá si el texto es diferente en tu hoja
+    // --- Selección por defecto: Piso "Promocion" ---
+    const promociones = "PROMOCION"; 
     const opcionPromociones = [...pisoFilter.options].find(opt => opt.value.toLowerCase() === promociones.toLowerCase());
     if (opcionPromociones) {
       pisoFilter.value = opcionPromociones.value;
@@ -73,10 +73,18 @@ function populateFilters(dataSet) {
 }
 
 // --- Aplicar filtros ---
-function applyFilters() {
+function applyFilters(fromSearch = false) {
   const search = searchInput.value.toLowerCase();
-  const selectedMarca = marcaFilter.value;
-  const selectedPiso = pisoFilter.value;
+  let selectedMarca = marcaFilter.value;
+  let selectedPiso = pisoFilter.value;
+
+  // Si la llamada viene del buscador, resetea los filtros
+  if (fromSearch) {
+    marcaFilter.value = "";
+    pisoFilter.value = "";
+    selectedMarca = "";
+    selectedPiso = "";
+  }
 
   if (!search && !selectedMarca && !selectedPiso) {
     setInitialMessage();
@@ -102,6 +110,14 @@ function setInitialMessage() {
   tableBody.innerHTML = `<tr><td colspan="6">Usa los filtros o ingresa una búsqueda para mostrar resultados.</td></tr>`;
 }
 
-searchInput.addEventListener("input", applyFilters);
+// Al escribir en el buscador, resetea los filtros
+searchInput.addEventListener("input", () => applyFilters(true));
+
+// Seleccionar todo el texto al hacer clic
+searchInput.addEventListener("focus", function() {
+  searchInput.select();
+});
+
+// Cambiar filtro manualmente no borra búsqueda
 marcaFilter.addEventListener("change", applyFilters);
 pisoFilter.addEventListener("change", applyFilters);
