@@ -34,38 +34,44 @@ input, select {
 }
 
 .table-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   width: 100%;
+  overflow-x: hidden;
 }
 
 table {
   width: 100%;
-  min-width: 600px;
   border-collapse: collapse;
+  table-layout: fixed; /* ¡clave! para que el contenido se distribuya automáticamente */
 }
 
 th, td {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #ddd;
   text-align: left;
-  white-space: nowrap;
-}
-
-td.descripcion, th.descripcion-header {
-  white-space: normal;
   word-wrap: break-word;
-  max-width: 200px;
+  font-size: 14px;
 }
 
 img {
-  max-width: 80px;
+  max-width: 60px;
   height: auto;
   border-radius: 5px;
 }
 
 thead {
   background: white;
+}
+
+.descripcion,
+.descripcion-header {
+  width: 40%;
+  word-wrap: break-word;
+}
+
+.codigo,
+.codigo-header {
+  width: 20%;
+  word-wrap: break-word;
 }
 
 @media (max-width: 600px) {
@@ -77,23 +83,13 @@ thead {
     width: 100%;
   }
 
-  /* Ocultar columnas extra en móviles */
+  /* Oculta Marca y Piso en móviles */
   .ocultar-en-movil {
     display: none;
   }
-}
-/* Columna código de barras con ancho limitado en móviles */
-.codigo,
-.codigo-header {
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
-@media (max-width: 600px) {
-  .codigo,
-  .codigo-header {
-    max-width: 60px;
+  /* Letra más chica para columnas */
+  th, td {
     font-size: 12px;
   }
 }

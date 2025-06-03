@@ -97,18 +97,18 @@ function renderTable(data) {
     precioCell.textContent = item.PRECIO || "";
     row.appendChild(precioCell);
 
-    // Código de Barras
+// Código de Barras
 const codigoCell = document.createElement("td");
 codigoCell.textContent = item["CÓDIGO DE BARRAS"] || "";
-codigoCell.classList.add("codigo");
+codigoCell.classList.add("codigo"); // 👈 clase agregada
 row.appendChild(codigoCell);
 
+// Descripción
+const descCell = document.createElement("td");
+descCell.textContent = item.DESCRIPCION || "";
+descCell.classList.add("descripcion"); // 👈 clase agregada
+row.appendChild(descCell);
 
-    // Descripción
-    const descCell = document.createElement("td");
-    descCell.textContent = item.DESCRIPCION || "";
-    descCell.classList.add("descripcion");
-    row.appendChild(descCell);
 
     // Marca
     const marcaCell = document.createElement("td");
