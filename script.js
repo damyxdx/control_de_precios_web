@@ -98,9 +98,11 @@ function renderTable(data) {
     row.appendChild(precioCell);
 
     // Código de Barras
-    const codigoCell = document.createElement("td");
-    codigoCell.textContent = item["CÓDIGO DE BARRAS"] || "";
-    row.appendChild(codigoCell);
+const codigoCell = document.createElement("td");
+codigoCell.textContent = item["CÓDIGO DE BARRAS"] || "";
+codigoCell.classList.add("codigo");
+row.appendChild(codigoCell);
+
 
     // Descripción
     const descCell = document.createElement("td");
