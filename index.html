@@ -4,85 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Control de Precios</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: white;
-      padding: 15px;
-      margin: 0;
-    }
-
-    h1 {
-      color: #333;
-      font-size: 24px;
-      text-align: center;
-      margin-top: 0;
-    }
-
-    .filter-section {
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      margin-bottom: 20px;
-      background: white;
-      position: sticky; /* importante para fijar en scroll */
-      top: 0; /* posición donde se fija */
-      padding: 10px 0;
-      z-index: 100;
-    }
-
-    input, select {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-      box-sizing: border-box;
-      flex: 1;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    img {
-      max-width: 80px;
-      height: auto;
-      border-radius: 5px;
-    }
-
-    thead {
-      position: sticky;
-      top: 62px; /* ajustado para que quede debajo del filtro */
-      background: white;
-      z-index: 99;
-    }
-
-    tbody {
-      overflow-y: auto;
-    }
-
-    @media (max-width: 600px) {
-      .filter-section {
-        flex-direction: column;
-      }
-
-      input, select {
-        width: 100%;
-      }
-      
-      thead {
-        top: 140px; /* altura ajustada para móviles */
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Control de Precios</h1>
@@ -91,19 +13,24 @@
     <select id="marcaFilter"><option value="">Filtrar por Marca</option></select>
     <select id="pisoFilter"><option value="">Filtrar por Piso</option></select>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Imagen</th>
-        <th>Precio</th>
-        <th>Código de Barras</th>
-        <th>Descripción</th>        
-        <th>Marca</th>
-        <th>Piso</th>
-      </tr>
-    </thead>
-    <tbody id="data-body"></tbody>
-  </table>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Precio</th>
+          <th>Código de Barras</th>
+          <th>Descripción</th>
+          <th>Marca</th>
+          <th>Piso</th>
+        </tr>
+      </thead>
+      <tbody id="data-body">
+        <!-- Datos cargados dinámicamente -->
+      </tbody>
+    </table>
+  </div>
 
   <script src="script.js"></script>
 </body>
