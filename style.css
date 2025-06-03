@@ -82,3 +82,18 @@ thead {
     display: none;
   }
 }
+/* Columna código de barras con ancho limitado en móviles */
+.codigo,
+.codigo-header {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+  .codigo,
+  .codigo-header {
+    max-width: 60px;
+    font-size: 12px;
+  }
+}
