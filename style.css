@@ -33,9 +33,10 @@ input, select {
   flex: 1;
 }
 
-.table-responsive {
+.table-container {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 table {
@@ -58,10 +59,7 @@ img {
 }
 
 thead {
-  position: sticky;
-  top: 62px;
   background: white;
-  z-index: 99;
 }
 
 @media (max-width: 600px) {
@@ -73,11 +71,7 @@ thead {
     width: 100%;
   }
 
-  thead {
-    top: 140px;
-  }
-
-  /* Oculta columnas desde la 5 en adelante en pantallas chicas */
+  /* Ocultar columnas extra en móviles */
   th:nth-child(n+5),
   td:nth-child(n+5) {
     display: none;
