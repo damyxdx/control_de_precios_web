@@ -52,6 +52,12 @@ th, td {
   white-space: nowrap;
 }
 
+td.descripcion, th.descripcion-header {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 200px;
+}
+
 img {
   max-width: 80px;
   height: auto;
@@ -72,8 +78,7 @@ thead {
   }
 
   /* Ocultar columnas extra en móviles */
-  th:nth-child(n+5),
-  td:nth-child(n+5) {
+  .ocultar-en-movil {
     display: none;
   }
 }

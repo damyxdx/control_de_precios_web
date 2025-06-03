@@ -9,123 +9,117 @@ const pisoFilter = document.getElementById("pisoFilter");
 
 let data = [];
 
-// --- Carga de datos desde todas las hojas ---
+// --- Cargar datos de todas las hojas ---
 Promise.all(urls.map(url => fetch(url).then(res => res.json())))
   .then(results => {
     data = results.flat();
     populateFilters(data);
-
-    // --- Selección por defecto: Piso "Promocion" ---
-    const promociones = "Promocion";
-    const opcionPromociones = [...pisoFilter.options].find(opt => opt.value.toLowerCase() === promociones.toLowerCase());
-    if (opcionPromociones) {
-      pisoFilter.value = opcionPromociones.value;
-      applyFilters();
-    } else {
-      setInitialMessage();
-    }
+    applyDefaultFilters(); // Mostrar por defecto Promociones
+    renderTable(data);
   });
 
-// --- Renderizado de tabla ---
-function renderTable(dataSet) {
-  tableBody.innerHTML = "";
+// --- Filtros dinámicos ---
+searchInput.addEventListener("input", () => renderTable(data));
+marcaFilter.addEventListener("change", () => renderTable(data));
+pisoFilter.addEventListener("change", () => renderTable(data));
 
-  if (dataSet.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="6">No se encontraron resultados.</td></tr>`;
-    return;
-  }
-
-  dataSet.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row["IMAGEN"] ? `<img src="${row["IMAGEN"]}" style="width:80px;height:auto;">` : ""}</td>
-      <td>${row["PRECIO"] || ""}</td>
-      <td>${row["CODIGO DE BARRAS"] || ""}</td>
-      <td>${row["DESCRIPCION"] || ""}</td>
-      <td>${row["MARCA"] || ""}</td>
-      <td>${row["PISO"] || ""}</td>
-    `;
-    tableBody.appendChild(tr);
-  });
-}
-
-// --- Filtros alfabéticos ---
-function populateFilters(dataSet) {
-  const marcas = [...new Set(dataSet.map(item => item["MARCA"]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
-  const pisos = [...new Set(dataSet.map(item => item["PISO"]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
-
-  marcaFilter.innerHTML = `<option value="">Todas las Marcas</option>`;
-  pisoFilter.innerHTML = `<option value="">Todos los Pisos</option>`;
+// --- Poblar filtros únicos ---
+function populateFilters(data) {
+  const marcas = [...new Set(data.map(item => item.MARCA).filter(Boolean))].sort();
+  const pisos = [...new Set(data.map(item => item.PISO).filter(Boolean))].sort();
 
   marcas.forEach(marca => {
-    const opt = document.createElement("option");
-    opt.value = marca;
-    opt.textContent = marca;
-    marcaFilter.appendChild(opt);
+    const option = document.createElement("option");
+    option.value = marca;
+    option.textContent = marca;
+    marcaFilter.appendChild(option);
   });
 
   pisos.forEach(piso => {
-    const opt = document.createElement("option");
-    opt.value = piso;
-    opt.textContent = piso;
-    pisoFilter.appendChild(opt);
+    const option = document.createElement("option");
+    option.value = piso;
+    option.textContent = piso;
+    pisoFilter.appendChild(option);
   });
 }
 
-// --- Aplicar filtros ---
-function applyFilters() {
-  const search = searchInput.value.toLowerCase();
-  const selectedMarca = marcaFilter.value;
-  const selectedPiso = pisoFilter.value;
+// --- Aplicar filtro por defecto ---
+function applyDefaultFilters() {
+  pisoFilter.value = "PROMOCION";
+}
 
-  if (!search && !selectedMarca && !selectedPiso) {
-    setInitialMessage();
+// --- Renderizar tabla con filtros activos ---
+function renderTable(data) {
+  const search = searchInput.value.toLowerCase();
+  const marca = marcaFilter.value;
+  const piso = pisoFilter.value;
+
+  const filtered = data.filter(item => {
+    const matchesSearch =
+      item.DESCRIPCION?.toLowerCase().includes(search) ||
+      item["CÓDIGO DE BARRAS"]?.toLowerCase().includes(search) ||
+      item.MARCA?.toLowerCase().includes(search) ||
+      item.PISO?.toLowerCase().includes(search);
+
+    const matchesMarca = !marca || item.MARCA === marca;
+    const matchesPiso = !piso || item.PISO === piso;
+
+    return matchesSearch && matchesMarca && matchesPiso;
+  });
+
+  tableBody.innerHTML = "";
+
+  if (filtered.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 6;
+    cell.textContent = "No se encontraron resultados.";
+    row.appendChild(cell);
+    tableBody.appendChild(row);
     return;
   }
 
-  const filtered = data.filter(row => {
-    return (!selectedMarca || row["MARCA"] === selectedMarca) &&
-           (!selectedPiso || row["PISO"] === selectedPiso) &&
-           (
-             row["DESCRIPCION"]?.toLowerCase().includes(search) ||
-             row["CODIGO DE BARRAS"]?.toLowerCase().includes(search) ||
-             row["MARCA"]?.toLowerCase().includes(search) ||
-             row["PISO"]?.toLowerCase().includes(search)
-           );
+  filtered.forEach(item => {
+    const row = document.createElement("tr");
+
+    // Imagen
+    const imgCell = document.createElement("td");
+    if (item.IMAGEN) {
+      const img = document.createElement("img");
+      img.src = item.IMAGEN;
+      img.alt = item.DESCRIPCION || "";
+      imgCell.appendChild(img);
+    }
+    row.appendChild(imgCell);
+
+    // Precio
+    const precioCell = document.createElement("td");
+    precioCell.textContent = item.PRECIO || "";
+    row.appendChild(precioCell);
+
+    // Código de Barras
+    const codigoCell = document.createElement("td");
+    codigoCell.textContent = item["CÓDIGO DE BARRAS"] || "";
+    row.appendChild(codigoCell);
+
+    // Descripción
+    const descCell = document.createElement("td");
+    descCell.textContent = item.DESCRIPCION || "";
+    descCell.classList.add("descripcion");
+    row.appendChild(descCell);
+
+    // Marca
+    const marcaCell = document.createElement("td");
+    marcaCell.textContent = item.MARCA || "";
+    marcaCell.classList.add("ocultar-en-movil");
+    row.appendChild(marcaCell);
+
+    // Piso
+    const pisoCell = document.createElement("td");
+    pisoCell.textContent = item.PISO || "";
+    pisoCell.classList.add("ocultar-en-movil");
+    row.appendChild(pisoCell);
+
+    tableBody.appendChild(row);
   });
-
-  renderTable(filtered);
 }
-
-// --- Mensaje inicial ---
-function setInitialMessage() {
-  tableBody.innerHTML = `<tr><td colspan="6">Usa los filtros o ingresa una búsqueda para mostrar resultados.</td></tr>`;
-}
-
-// --- Selecciona todo el texto al hacer foco ---
-searchInput.addEventListener("focus", function() {
-  searchInput.select();
-});
-
-// --- Al escribir en el buscador, limpia los filtros y filtra ---
-searchInput.addEventListener("input", function() {
-  if (marcaFilter.value !== "" || pisoFilter.value !== "") {
-    marcaFilter.value = "";
-    pisoFilter.value = "";
-  }
-  applyFilters();
-});
-
-// --- Al cambiar filtros, limpia el buscador y filtra ---
-marcaFilter.addEventListener("change", function() {
-  if (searchInput.value !== "") {
-    searchInput.value = "";
-  }
-  applyFilters();
-});
-pisoFilter.addEventListener("change", function() {
-  if (searchInput.value !== "") {
-    searchInput.value = "";
-  }
-  applyFilters();
-});
