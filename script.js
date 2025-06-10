@@ -65,7 +65,7 @@ function populateFilters(data) {
 
 // --- Aplicar filtro por defecto ---
 function applyDefaultFilters() {
-  pisoFilter.value = "PROMOCION"; // O "PROMOCIONES" si así figura en el sheet
+  pisoFilter.value = "PROMOCION"; 
 }
 
 // --- Renderizar tabla con filtros activos ---
