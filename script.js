@@ -18,16 +18,21 @@ Promise.all(urls.map(url => fetch(url).then(res => res.json())))
     renderTable(data);
   });
 
+// --- Seleccionar todo el texto al hacer clic en el input ---
+searchInput.addEventListener("focus", function() {
+  searchInput.select();
+});
+
 // --- Filtros dinámicos ---
 searchInput.addEventListener("input", () => {
   const value = searchInput.value.trim();
+  // Solo filtra si tiene 3 letras o más
   if (value.length >= 3) {
     marcaFilter.value = "";
     pisoFilter.value = "";
     renderTable(data);
-  } else {
-    renderTable(data);
   }
+  // Si tiene menos de 3, no hace nada, deja la tabla como está
 });
 marcaFilter.addEventListener("change", () => renderTable(data));
 pisoFilter.addEventListener("change", () => renderTable(data));
@@ -75,7 +80,7 @@ function renderTable(data) {
   const piso = pisoFilter.value;
 
   const filtered = data.filter(item => {
-    // Si la búsqueda tiene 3 letras o más, solo busca por texto
+    // Si la búsqueda tiene 3 letras o más, solo busca por texto (sin filtros)
     if (search.length >= 3) {
       return (
         (item.DESCRIPCION?.toLowerCase().includes(search) ||
@@ -84,7 +89,7 @@ function renderTable(data) {
          item.PISO?.toLowerCase().includes(search))
       );
     } else {
-      // Si la búsqueda tiene menos de 3 letras, filtra por Marca y Piso
+      // Si la búsqueda tiene menos de 3 letras, filtra por Marca y Piso normalmente
       const matchesMarca = !marca || item.MARCA === marca;
       const matchesPiso = !piso || item.PISO === piso;
       return matchesMarca && matchesPiso;
@@ -148,4 +153,3 @@ function renderTable(data) {
     tableBody.appendChild(row);
   });
 }
-
