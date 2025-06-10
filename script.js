@@ -1,5 +1,5 @@
 const sheetID = "1id74cUVaB0GN6ROPrxwBj8K-FZWkl6dD7kMgWze_X6U";
-const sheetNames = ["PB", "BEAUTY", "BAZAR"];
+const sheetNames = ["PB", "BEAUTY", "BAZAR", "PROMOCIONES"];
 const urls = sheetNames.map(name => `https://opensheet.elk.sh/${sheetID}/${name}`);
 
 const tableBody = document.getElementById("data-body");
