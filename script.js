@@ -19,7 +19,16 @@ Promise.all(urls.map(url => fetch(url).then(res => res.json())))
   });
 
 // --- Filtros dinámicos ---
-searchInput.addEventListener("input", () => renderTable(data));
+searchInput.addEventListener("input", () => {
+  const value = searchInput.value.trim();
+  if (value.length >= 3) {
+    marcaFilter.value = "";
+    pisoFilter.value = "";
+    renderTable(data);
+  } else {
+    renderTable(data);
+  }
+});
 marcaFilter.addEventListener("change", () => renderTable(data));
 pisoFilter.addEventListener("change", () => renderTable(data));
 
@@ -27,6 +36,17 @@ pisoFilter.addEventListener("change", () => renderTable(data));
 function populateFilters(data) {
   const marcas = [...new Set(data.map(item => item.MARCA).filter(Boolean))].sort();
   const pisos = [...new Set(data.map(item => item.PISO).filter(Boolean))].sort();
+
+  // Opción por defecto (vacía)
+  const defaultOptionMarca = document.createElement("option");
+  defaultOptionMarca.value = "";
+  defaultOptionMarca.textContent = "Todas";
+  marcaFilter.appendChild(defaultOptionMarca);
+
+  const defaultOptionPiso = document.createElement("option");
+  defaultOptionPiso.value = "";
+  defaultOptionPiso.textContent = "Todos";
+  pisoFilter.appendChild(defaultOptionPiso);
 
   marcas.forEach(marca => {
     const option = document.createElement("option");
@@ -45,26 +65,30 @@ function populateFilters(data) {
 
 // --- Aplicar filtro por defecto ---
 function applyDefaultFilters() {
-  pisoFilter.value = "PROMOCION";
+  pisoFilter.value = "PROMOCION"; // O "PROMOCIONES" si así figura en el sheet
 }
 
 // --- Renderizar tabla con filtros activos ---
 function renderTable(data) {
-  const search = searchInput.value.toLowerCase();
+  const search = searchInput.value.trim().toLowerCase();
   const marca = marcaFilter.value;
   const piso = pisoFilter.value;
 
   const filtered = data.filter(item => {
-    const matchesSearch =
-      item.DESCRIPCION?.toLowerCase().includes(search) ||
-      item["CÓDIGO DE BARRAS"]?.toLowerCase().includes(search) ||
-      item.MARCA?.toLowerCase().includes(search) ||
-      item.PISO?.toLowerCase().includes(search);
-
-    const matchesMarca = !marca || item.MARCA === marca;
-    const matchesPiso = !piso || item.PISO === piso;
-
-    return matchesSearch && matchesMarca && matchesPiso;
+    // Si la búsqueda tiene 3 letras o más, solo busca por texto
+    if (search.length >= 3) {
+      return (
+        (item.DESCRIPCION?.toLowerCase().includes(search) ||
+         item["CÓDIGO DE BARRAS"]?.toLowerCase().includes(search) ||
+         item.MARCA?.toLowerCase().includes(search) ||
+         item.PISO?.toLowerCase().includes(search))
+      );
+    } else {
+      // Si la búsqueda tiene menos de 3 letras, filtra por Marca y Piso
+      const matchesMarca = !marca || item.MARCA === marca;
+      const matchesPiso = !piso || item.PISO === piso;
+      return matchesMarca && matchesPiso;
+    }
   });
 
   tableBody.innerHTML = "";
@@ -97,18 +121,17 @@ function renderTable(data) {
     precioCell.textContent = item.PRECIO || "";
     row.appendChild(precioCell);
 
-// Código de Barras
-const codigoCell = document.createElement("td");
-codigoCell.textContent = item["CÓDIGO DE BARRAS"] || "";
-codigoCell.classList.add("codigo"); // 👈 clase agregada
-row.appendChild(codigoCell);
+    // Código de Barras
+    const codigoCell = document.createElement("td");
+    codigoCell.textContent = item["CÓDIGO DE BARRAS"] || "";
+    codigoCell.classList.add("codigo");
+    row.appendChild(codigoCell);
 
-// Descripción
-const descCell = document.createElement("td");
-descCell.textContent = item.DESCRIPCION || "";
-descCell.classList.add("descripcion"); // 👈 clase agregada
-row.appendChild(descCell);
-
+    // Descripción
+    const descCell = document.createElement("td");
+    descCell.textContent = item.DESCRIPCION || "";
+    descCell.classList.add("descripcion");
+    row.appendChild(descCell);
 
     // Marca
     const marcaCell = document.createElement("td");
@@ -125,3 +148,4 @@ row.appendChild(descCell);
     tableBody.appendChild(row);
   });
 }
+
